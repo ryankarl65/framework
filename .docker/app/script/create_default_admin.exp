@@ -1,0 +1,11 @@
+#!/usr/bin/expect
+
+spawn php artisan shopper:admin
+
+expect "Email Address" {send "admin@shopper.com\r"}
+expect "First Name" {send "kemi\r"}
+expect "Last Name" {send "mvet\r"}
+expect "Password" {send "Cameroon@237!\r"}
+expect "Confirm Password" {send "Cameroon@237!\r"}
+
+interact

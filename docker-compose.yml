@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+
+  # if you need, you may change this database service by others like mariadb or mysql.
+  db:
+    image: postgres:latest
+    container_name: shopper_db
+    restart: unless-stopped
+    volumes:
+#      - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - POSTGRES_USER=cmshopper
+      - POSTGRES_PASSWORD=cmshopper
+      - POSTGRES_DB=cmshopper
+    ports:
+      - "5432:5432"
+    networks:
+      - shopper_network
+
+  app:
+    container_name: shopper_app
+    build:
+      context: .docker/app
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on: 
+      - db
+    environment:
+      # set same value as db service (name, host, ...)
+      - DB_CONNECTION=pgsql
+      - DB_HOST=shopper_db
+      - DB_DATABASE=cmshopper
+      - DB_USERNAME=cmshopper
+      - DB_PASSWORD=cmshopper
+    networks:
+      - shopper_network
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+      - "8001:8001"
+
+networks:
+  shopper_network:
+    driver: bridge

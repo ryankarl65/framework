@@ -1,0 +1,7 @@
+#!/usr/bin/expect
+
+spawn php artisan shopper:install
+
+expect "yes/no" {send "yes\r"}
+
+interact
